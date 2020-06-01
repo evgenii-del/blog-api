@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,7 +16,7 @@ class PostViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = PostSerializer
-    queryset = Post.objects.all().annotate(votes=Count("vote"))
+    queryset = Post.objects.all().annotate(count_votes=Count("votes"))
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -52,11 +52,12 @@ class UpvoteView(APIView):
     """
     A view that allows the user to vote for a post
     """
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, pk):
         post = get_object_or_404(Post, id=pk)
-        if post.vote.filter(id=self.request.user.id).exists():
-            post.vote.remove(request.user)
+        if post.votes.filter(id=self.request.user.id).exists():
+            post.votes.remove(self.request.user)
             return Response(status=201)
-        post.vote.add(request.user)
+        post.votes.add(self.request.user)
         return Response(status=201)

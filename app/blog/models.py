@@ -12,7 +12,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = AutoSlugField(populate_from="title", max_length=150, unique=True)
-    vote = models.ManyToManyField(User, blank=True, related_name="vote")
+    votes = models.ManyToManyField(User, related_name="vote", blank=True)
 
     def __str__(self):
         return self.title
