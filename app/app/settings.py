@@ -24,8 +24,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "blog.apps.BlogConfig",
     "celery",
+    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -117,6 +119,7 @@ STATICFILES_DIRS = [STATIC_DIR]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# CELERY settings. Redis broker
 CELERY_BROKER_URL = 'redis://redis:6379'
 CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
@@ -125,9 +128,27 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 from celery.schedules import crontab
 
+# Async tasks
 CELERY_BEAT_SCHEDULE = {
     'hello': {
         'task': 'blog.tasks.hello',
         'schedule': crontab(minute=0, hour=0)
     }
 }
+
+# DJOSER settings
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': False,
+    'SERIALIZERS': {},
+}
+# REST FRAMEWORK settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
