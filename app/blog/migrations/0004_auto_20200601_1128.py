@@ -6,13 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0003_auto_20200530_1602'),
+        ("blog", "0003_auto_20200530_1602"),
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='post',
-            old_name='vote',
-            new_name='votes',
-        ),
+        migrations.RenameField(model_name="post", old_name="vote", new_name="votes",),
     ]

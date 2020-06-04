@@ -17,6 +17,6 @@ urlpatterns = format_suffix_patterns(
         path("posts/<int:pk>/", posts_detail),
         path("comments/", comments),
         path("comments/<int:pk>/", comments_detail),
-        path("posts/<int:pk>/upvote/", UpvoteView.as_view()),
+        path("posts/<int:pk>/upvotes/", UpvoteView.as_view()),
     ]
 )

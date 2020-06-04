@@ -17,16 +17,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
     serializer_class = PostSerializer
     queryset = Post.objects.all().annotate(count_votes=Count("votes"))
+    permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-    def get_permissions(self):
-        if self.action == "update" or self.action == "destroy":
-            permission_classes = [IsOwnerOrReadOnly]
-        else:
-            permission_classes = [IsAuthenticatedOrReadOnly]
-        return [permission() for permission in permission_classes]
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -36,22 +30,17 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+    permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-    def get_permissions(self):
-        if self.action == "update" or self.action == "destroy":
-            permission_classes = [IsOwnerOrReadOnly]
-        else:
-            permission_classes = [IsAuthenticatedOrReadOnly]
-        return [permission() for permission in permission_classes]
 
 
 class UpvoteView(APIView):
     """
     A view that allows the user to vote for a post
     """
+
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, pk):
